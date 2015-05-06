@@ -24,104 +24,108 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author <a href="mailto:mjremijan@yahoo.com">Michael Remijan</a>
  */
-@WebServlet(name = "ActionBazaarShippingRequestServlet", urlPatterns = {"/ActionBazaarShippingRequestServlet"})
+@WebServlet(name = "ActionBazaarShippingRequestServlet", urlPatterns = { "/ActionBazaarShippingRequestServlet" })
 public class ActionBazaarShippingRequestServlet extends HttpServlet {
-  
-@Inject
-@JMSConnectionFactory("jms/QueueConnectionFactory")
-private JMSContext context;
 
-@Resource(name="jms/ShippingRequestQueue")
-private Destination destination;
+	@Inject
+	@JMSConnectionFactory("java:/ConnectionFactory")
+	private JMSContext context;
 
-  /**
+	@Resource(name = "java:/jboss/exported/jms/queue/testqueue")
+	private Destination destination;
+
+	/**
    */
-  protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException {
-    
-    Throwable oops = null;
-    try {      
-ActionBazaarShippingRequest shippingRequest = new ActionBazaarShippingRequest();	           
-shippingRequest.setItem("item");                                      
-shippingRequest.setShippingAddress("address");                        
-shippingRequest.setShippingMethod("method");	                          
-shippingRequest.setInsuranceAmount(100.50);                          
+	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-ObjectMessage om = context.createObjectMessage();
-om.setObject(shippingRequest);
+		Throwable oops = null;
+		try {
+			ActionBazaarShippingRequest shippingRequest = new ActionBazaarShippingRequest();
+			shippingRequest.setItem("item");
+			shippingRequest.setShippingAddress("address");
+			shippingRequest.setShippingMethod("method");
+			shippingRequest.setInsuranceAmount(100.50);
 
-JMSProducer producer = context.createProducer();
-producer.send(destination, om);  
+			ObjectMessage om = context.createObjectMessage();
+			om.setObject(shippingRequest);
 
-    } catch (Throwable t) {
-      oops = t;
-    }
-    
-    response.setContentType("text/html;charset=UTF-8");
-    PrintWriter out = response.getWriter();
-    try {
-      /* TODO output your page here. You may use following sample code. */
-      out.println("<!DOCTYPE html>");
-      out.println("<html>");
-      out.println("<head>");
-      out.println("<title>Servlet SendMessageServlet</title>");      
-      out.println("</head>");
-      out.println("<body>");
-      out.println("<h1>Servlet SendMessageServlet at " + request.getContextPath() + "</h1>");
-      out.println("<p>Time:  " + String.valueOf(new Date()) + "</p>");
-      if (oops != null) {
-        out.println("<p>Opps:</p>");
-        out.println("<xmp>");
-        oops.printStackTrace(out);
-        out.println("</xmp>");
-      } else {
-        out.println("<p>Should be OK</p>");
-      }
-      out.println("</body>");
-      out.println("</html>");
-    } finally {      
-      out.close();
-    }
-  }
+			JMSProducer producer = context.createProducer();
+			producer.send(destination, om);
 
-  // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-  /**
-   * Handles the HTTP
-   * <code>GET</code> method.
-   *
-   * @param request servlet request
-   * @param response servlet response
-   * @throws ServletException if a servlet-specific error occurs
-   * @throws IOException if an I/O error occurs
-   */
-  @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException {
-    processRequest(request, response);
-  }
+		} catch (Throwable t) {
+			oops = t;
+		}
 
-  /**
-   * Handles the HTTP
-   * <code>POST</code> method.
-   *
-   * @param request servlet request
-   * @param response servlet response
-   * @throws ServletException if a servlet-specific error occurs
-   * @throws IOException if an I/O error occurs
-   */
-  @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException {
-    processRequest(request, response);
-  }
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		try {
+			/* TODO output your page here. You may use following sample code. */
+			out.println("<!DOCTYPE html>");
+			out.println("<html>");
+			out.println("<head>");
+			out.println("<title>Servlet SendMessageServlet</title>");
+			out.println("</head>");
+			out.println("<body>");
+			out.println("<h1>Servlet SendMessageServlet at " + request.getContextPath() + "</h1>");
+			out.println("<p>Time:  " + String.valueOf(new Date()) + "</p>");
+			if (oops != null) {
+				out.println("<p>Opps:</p>");
+				out.println("<xmp>");
+				oops.printStackTrace(out);
+				out.println("</xmp>");
+			} else {
+				out.println("<p>Should be OK</p>");
+			}
+			out.println("</body>");
+			out.println("</html>");
+		} finally {
+			out.close();
+		}
+	}
 
-  /**
-   * Returns a short description of the servlet.
-   *
-   * @return a String containing servlet description
-   */
-  @Override
-  public String getServletInfo() {
-    return "Short description";
-  }// </editor-fold>
+	// <editor-fold defaultstate="collapsed"
+	// desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+	/**
+	 * Handles the HTTP <code>GET</code> method.
+	 *
+	 * @param request
+	 *            servlet request
+	 * @param response
+	 *            servlet response
+	 * @throws ServletException
+	 *             if a servlet-specific error occurs
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request, response);
+	}
+
+	/**
+	 * Handles the HTTP <code>POST</code> method.
+	 *
+	 * @param request
+	 *            servlet request
+	 * @param response
+	 *            servlet response
+	 * @throws ServletException
+	 *             if a servlet-specific error occurs
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		processRequest(request, response);
+	}
+
+	/**
+	 * Returns a short description of the servlet.
+	 *
+	 * @return a String containing servlet description
+	 */
+	@Override
+	public String getServletInfo() {
+		return "Short description";
+	}// </editor-fold>
 }
